@@ -1,15 +1,14 @@
+"use client";
 
-import { signIn } from "@/auth"
- 
-export default function SignIn() {
+import { Button } from "@heroui/react";
+import { signInWithGithub } from "@/actions/auth";
+
+export default function SignInButton() {
   return (
-    <form
-      action={async () => {
-        "use server"
-        await signIn("github")
-      }}
-    >
-      <button type="submit">Signin with GitHub</button>
+    <form action={signInWithGithub}>
+      <Button type="submit" color="primary" variant="bordered">
+        Sign in with GitHub
+      </Button>
     </form>
-  )
-} 
+  );
+}
