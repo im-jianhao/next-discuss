@@ -6,6 +6,7 @@ import UserAvatar from "./UserAvatar";
 import SignInButton from "./SignInButton";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 
 export const AcmeLogo = () => {
   return (
@@ -96,7 +97,15 @@ export default function Header() {
           />
         </NavbarItem>
       </NavbarContent>
-      <NavbarContent justify="end">{authContent}</NavbarContent>
+      {/* <NavbarContent justify="center">
+        <NavbarItem>
+          
+        </NavbarItem>
+      </NavbarContent> */}
+      <NavbarContent justify="end">
+        <ThemeSwitcher />
+        {authContent}
+      </NavbarContent>
     </Navbar>
   );
 }
