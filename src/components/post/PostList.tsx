@@ -2,12 +2,20 @@
 
 import { PostWithUserAndCount } from "@/prisma/queries/posts";
 import { Avatar } from "@heroui/react";
+import { useRouter } from "next/navigation";
 
 export default function PostList({ posts }: { posts: PostWithUserAndCount[] }) {
+  const router = useRouter();
   return (
     <div className="space-y-5">
       {posts.map((post) => (
-        <div className="border border-gray-200 rounded-md p-4 flex flex-row gap-2 items-center">
+        <div
+          key={post.id}
+          className="border border-gray-200 rounded-md p-4 flex flex-row gap-2 items-center"
+          onClick={() => {
+            router.push(`/topic/${post.topicId}/post/${post.id}`);
+          }}
+        >
           {post.user.image ? <Avatar src={post.user.image} size="sm" /> : null}
           <div>
             <h2 className="text-lg font-bold">{post.title}</h2>

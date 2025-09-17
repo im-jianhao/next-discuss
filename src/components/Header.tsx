@@ -1,8 +1,11 @@
 "use client";
+
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Input } from "@heroui/react";
 import { useSession } from "next-auth/react";
 import UserAvatar from "./UserAvatar";
 import SignInButton from "./SignInButton";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export const AcmeLogo = () => {
   return (
@@ -17,7 +20,26 @@ export const AcmeLogo = () => {
   );
 };
 
+const SearchIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="rotate(0)matrix(1, 0, 0, 1, 0, 0)" stroke="#000000" {...props}>
+      <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+      <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+      <g id="SVGRepo_iconCarrier">
+        {" "}
+        <path
+          d="M16.6725 16.6412L21 21M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        ></path>{" "}
+      </g>
+    </svg>
+  );
+};
+
 export default function Header() {
+  const router = useRouter();
   const { data: session, status } = useSession();
   let authContent;
   if (status === "loading") {
@@ -37,15 +59,41 @@ export default function Header() {
       </>
     );
   }
+
+  // 搜索框的搜索功能
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    setSearchQuery(searchParams.get("searchQuery") || "");
+  }, [searchParams]);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && searchQuery.trim()) {
+      router.push(`/search?searchQuery=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   return (
-    <Navbar>
-      <NavbarBrand>
+    <Navbar
+      classNames={{
+        brand: "cursor-pointer",
+      }}
+    >
+      <NavbarBrand
+        onClick={() => {
+          router.push("/");
+        }}
+      >
         <AcmeLogo />
         <p className="font-bold text-inherit">DISCUSS</p>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
-          <Input type="email" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            startContent={<SearchIcon className="mb-0.5 dark:text-white/90  pointer-events-none shrink-0" />}
+            onKeyDown={handleKeyDown}
+          />
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">{authContent}</NavbarContent>
